@@ -6,53 +6,151 @@ using namespace std;
 
 int main()
 {
-    string question[10] = {"1. Which of the following is the correct syntax to include a header file in C++?",
-                           "2. What is the output of the following code?\n\n#include <iostream>\n\nusing namespace std;\n\nint main() {\n\tcout << \"Hello, C++!\";\n\treturn 0;\n}",
-                           "3. What is the correct way to declare a constant variable in C++?",
-                           "4. Which data type is used to represent a floating-point number in C++?",
-                           "5. How do you create a single-line comment in C++?",
-                           "6. What does the main() function return in C++?",
-                           "7. How do you declare a pointer in C++?",
-                           "8. What is the default value of a local variable in C++?",
-                           "9. Which of the following is not a loop in C++?",
-                           "10. What is the use of the new keyword in C++?"};
+    string outputs[6] = {"1: Print help",
+                         "2: Print exchange status",
+                         "3: Place an ask",
+                         "4: Place a bid",
+                         "5: Print wallet",
+                         "6: Continuation"};
 
-    string mcq[10][4] = {{"a) #include <header>", "b) include <header>", "c) #include \"header.h\"", "d) Both a and c"},
-                         {"a) Hello, C++!", "b) Compilation Error", "c) Hello C++!", "d) Runtime Error"},
-                         {"a) const int value = 10;", "b) int const value = 10;", "c) #define value 10", "d) All of the above"},
-                         {"a) int", "b) char", "c) float", "d) bool"},
-                         {"a) /* This is a comment */", "b) // This is a comment", "c) # This is a comment", "d) ** This is a comment **"},
-                         {"a) void", "b) bool", "c) int", "d) float"},
-                         {"a) int* ptr;", "b) int ptr*;", "c) ptr int*;", "d) int ptr;"},
-                         {"a) 0", "b) null", "c) undefined", "d) garbage value"},
-                         {"a) for", "b) while", "c) do-while", "d) repeat"},
-                         {"a) To allocate memory dynamically", "b) To free memory", "c) To declare a variable", "d) To initialize a variable"}};
+    string helps[6] = {
+        "1: Print help - This option will display a guide to all the available operations and commands in the system.",
+        "2: Print exchange status - Use this option to see the current exchange rates for various currencies to Bitcoin.",
+        "3: Place an ask - This option allows you to place an ask order to buy Bitcoin with the selected currency.",
+        "4: Place a bid - Use this option to place a bid to sell Bitcoin. You can specify the amount and confirm the transaction.",
+        "5: Print wallet - This will display your current wallet balance in Bitcoin.",
+        "6: Continue - Use this option to choose whether you would like to continue using the program or exit."};
 
-    string answer[10] = {"d", "a", "d", "c", "b", "c", "a", "d", "d", "a"};
+    string currencies[] = {"USD", "EUR", "GBP", "JPY", "AUD"};
+    double exchangeRates[] = {91689.17, 86969.01, 72548.05, 14173908.02, 141842.05};
 
-    string userInput = "";
-    int arrSize = sizeof(question) / sizeof(question[0]);
-    int score = 0;
+    int userInput;
+    double ask, bid, afterConvert = 0, wallet = 0;
+    bool continueation = true;
 
-    for (int i = 0; i < arrSize; i++)
+    while (continueation)
     {
-        cout << question[i] << endl;
-        for (int j = 0; j < (sizeof(mcq[i]) / sizeof(mcq[i][0])); j++)
+        for (string option : outputs)
         {
+            cout << option << endl;
+        }
+        cout << "Type the number: ";
 
-            cout << mcq[i][j] << endl;
-        }
-        cout << "Type the letter of the correct answer: ";
         cin >> userInput;
-        transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
-        if (userInput == answer[i])
+        cout << "" << endl;
+        switch (userInput)
         {
-            score += 1;
+        case 1:
+        {
+            for (string h : helps)
+            {
+                cout << h << endl;
+            }
+            cout << "" << endl;
+            break;
         }
-        cout << "\n"
-             << endl;
+        case 2:
+        {
+            for (int i = 0; i < (sizeof(currencies) / sizeof(currencies[0])); i++)
+            {
+                cout << currencies[i] << " : " << exchangeRates[i] << endl;
+            }
+            cout << "" << endl;
+            break;
+        }
+        case 3:
+        {
+            double amount, bits, oneBitcoin, bitcoinAmount;
+            string currencyType = "";
+            bool convertToBitcoins = false;
+            string accepttation;
+
+            for (string c : currencies)
+            {
+                cout << c << endl;
+            }
+            cout << "Please type the currency: ";
+            cin >> currencyType;
+            cout << "\n";
+
+            cout << "Please type how much you would like pay: ";
+            cin >> amount;
+            cout << "\n";
+
+            transform(currencyType.begin(), currencyType.end(), currencyType.begin(), ::toupper);
+
+            for (int i = 0; i < (sizeof(currencies) / sizeof(currencies[0])); i++)
+            {
+                if (currencyType == currencies[i])
+                {
+                    oneBitcoin = exchangeRates[i];
+                    bitcoinAmount = amount / exchangeRates[i];
+                    break;
+                }
+            }
+
+            cout << "You can buy " << bitcoinAmount << " bitcoins for your amount" << endl;
+            cout << "Would you like to convert: yes/no" << endl;
+            cin >> accepttation;
+            transform(accepttation.begin(), accepttation.end(), accepttation.begin(), ::tolower);
+            convertToBitcoins = accepttation == "yes" ? true : false;
+            wallet = convertToBitcoins == true ? wallet + bitcoinAmount : wallet;
+            if (accepttation == "yes")
+                cout << "Your current amount in the wallet is " << wallet << endl;
+            else if (accepttation == "no")
+                break;
+            currencyType = "";
+            cout << "" << endl;
+            break;
+        }
+        case 4:
+        {
+            double bitAmount;
+            string confirmation;
+            cout << "Your wallet: " << wallet << endl;
+            cout << "Enter how much you would plan to Bid: ";
+            cin >> bitAmount;
+            cout << "\n";
+            cout << "Enter bit amount is " << bitAmount << "! Would like to confirm? yes/no ";
+            cin >> confirmation;
+            cout << "\n";
+            transform(confirmation.begin(), confirmation.end(), confirmation.begin(), ::tolower);
+            if (confirmation == "yes" && (wallet < 0 || bitAmount > wallet))
+            {
+                cerr << "Sorry! you cannot bid now due to low saffician balance" << endl;
+            }
+            else
+            {
+                wallet = (confirmation == "yes" && wallet > 0) ? wallet - bitAmount : wallet;
+                cout << "\n";
+                cout << "We have deducted " << bitAmount << " from your wallet, now you have " << wallet << " in your wallet." << endl;
+            }
+            cout << "" << endl;
+            break;
+        }
+        case 5:
+        {
+            cout << "You have " << wallet << " in your wallet." << endl;
+            cout << "" << endl;
+            break;
+        }
+        case 6:
+        {
+            string userContinuation;
+            cout << "Would you like to continue? Yes / No -> ";
+            cin >> userContinuation;
+            cout << "\n";
+            transform(userContinuation.begin(), userContinuation.end(), userContinuation.begin(), ::tolower);
+            continueation = userContinuation == "yes" ? true : false;
+            cout << "" << endl;
+            break;
+        }
+        default:
+            cout << "Invalid option. Please choose a valid option." << endl;
+            cout << "" << endl;
+            break;
+        }
     }
-    cout << "Your final score is: " << score << "/" << arrSize << endl;
 
     return 0;
 }
